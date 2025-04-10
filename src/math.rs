@@ -4,7 +4,7 @@ fn print_factorial(number: i64) {
     println!("Factorial is {number}");
 }
 
-pub fn get_factorial(number: i32) -> Result<(), &'static str> {
+pub fn factorial(number: i32) -> Result<(), &'static str> {
     //de reference number and cast into i64
     //factorials are going to get large
     let x:i64 = number.into();

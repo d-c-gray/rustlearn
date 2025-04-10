@@ -1,9 +1,12 @@
 use structopt::StructOpt;
-use crate::factorial::get_factorial;
-use crate::consoletools::triangle;
+use crate::math::factorial;
+use crate::consoletools::{triangle, hangman};
+use std::time::SystemTime;
 
-pub mod factorial;
+
+pub mod math;
 pub mod consoletools;
+pub mod database;
 
 #[derive(StructOpt)]
 #[structopt(about = "A collection of projects for getting familiar with Rust. See https://github.com/whostolemyhat/learning-projects.")]
@@ -16,6 +19,10 @@ pub enum RustLearnConfig {
         number: i32,
         #[structopt(short, long)]
         invert: bool,
+    },
+
+    Hangman {
+        word_length: i32,
     }
 
     /*
@@ -46,10 +53,23 @@ pub enum RustLearnConfig {
 
 impl RustLearnConfig {
     pub fn dispatch(self)->Result <(), &'static str>{
+        let sys_time = SystemTime::now();
+
         let result = match self {
-            RustLearnConfig::Factorial { number}  => get_factorial(number),
+            RustLearnConfig::Factorial { number}  => factorial(number),
             RustLearnConfig::Triangle { number, invert}  => triangle(number, invert),
+            RustLearnConfig::Hangman { word_length } => hangman(word_length)
         };
+        let new_sys_time = SystemTime::now();
+
+        //Calculate run time
+        let difference = new_sys_time.duration_since(sys_time);
+        match difference {
+            Result::Ok(duration) => println!("Run Time : {} us", duration.as_micros()),
+            Result::Err(e) => println!("Run Time Calc Error : {e}")
+
+        }
+
         result
     }
 }
